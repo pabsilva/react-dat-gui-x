@@ -9,7 +9,7 @@ export default class DatFolder extends Component {
     title: PropTypes.string,
     closed: PropTypes.bool,
     children: PropTypes.element.isRequired,
-    onChange: PropTypes.func,
+    //onChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -17,7 +17,8 @@ export default class DatFolder extends Component {
     style: null,
     title: 'Folder',
     closed: true,
-    onChange: () => null
+    //onChange: () => null This is causing the callbacks to be overriden in the components inside the folder
+    //we need to check why
   };
 
   constructor(props) {

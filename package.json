@@ -1,6 +1,6 @@
 {
   "name": "react-dat-gui-x",
-  "version": "4.2.5",
+  "version": "4.2.11",
   "description": "dat.GUI reimagined for React (forked from react-dat-gui)",
   "main": "dist/index.cjs.js",
   "exports": "./dist/index.cjs.js",
@@ -109,10 +109,5 @@
     "rollup-plugin-scss": "^2.6.1",
     "stylelint": "^13.12.0",
     "stylelint-config-recommended": "^4.0.0"
-  },
-  "peerDependencies": {
-    "prop-types": "^15.7.2",
-    "react": ">=16.0.0",
-    "react-dom": ">=16.0.0"
   }
 }
