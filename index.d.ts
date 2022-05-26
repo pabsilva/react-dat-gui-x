@@ -44,6 +44,7 @@ export class DatUnchangableFieldProps {
 
 export class DatChangableFieldProps extends DatUnchangableFieldProps {
   path: string;
+  onChange?: (path:string, value: any) => any;
 }
 
 export interface DatButtonProps extends DatUnchangableFieldProps {
@@ -54,7 +55,7 @@ export class DatButton extends React.Component<DatButtonProps, any> {}
 
 export interface DatFolderProps extends DatUnchangableFieldProps {
   title: string;
-  closed: boolean;
+  closed?: boolean;
   children: any;
 }
 
@@ -90,7 +91,7 @@ export interface DatNumberProps extends DatChangableFieldProps {
 export class DatNumber extends React.Component<DatNumberProps, any> {}
 
 export interface DatSelectProps extends DatChangableFieldProps {
-  options: any[];
+  options: any[] | Record<string, any>;
 }
 
 export class DatSelect extends React.Component<DatSelectProps, any> {}
