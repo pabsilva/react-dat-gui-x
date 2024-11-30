@@ -19,6 +19,7 @@ var result = require('lodash.result');
 var isFinite$1 = require('lodash.isfinite');
 var clamp = require('lodash.clamp');
 var _objectWithoutProperties = require('@babel/runtime/helpers/objectWithoutProperties');
+var _slicedToArray = require('@babel/runtime/helpers/slicedToArray');
 var common = require('react-color/lib/components/common');
 var color = require('react-color/lib/helpers/color');
 var _toConsumableArray = require('@babel/runtime/helpers/toConsumableArray');
@@ -42,6 +43,7 @@ var result__default = /*#__PURE__*/_interopDefaultLegacy(result);
 var isFinite__default = /*#__PURE__*/_interopDefaultLegacy(isFinite$1);
 var clamp__default = /*#__PURE__*/_interopDefaultLegacy(clamp);
 var _objectWithoutProperties__default = /*#__PURE__*/_interopDefaultLegacy(_objectWithoutProperties);
+var _slicedToArray__default = /*#__PURE__*/_interopDefaultLegacy(_slicedToArray);
 var color__default = /*#__PURE__*/_interopDefaultLegacy(color);
 var _toConsumableArray__default = /*#__PURE__*/_interopDefaultLegacy(_toConsumableArray);
 
@@ -63,8 +65,12 @@ var DatString = /*#__PURE__*/function (_Component) {
 
     _defineProperty__default['default'](_assertThisInitialized__default['default'](_this), "handleChange", function (event) {
       var value = event.target.value;
-      var liveUpdate = _this.props.liveUpdate;
+      var _this$props = _this.props,
+          liveUpdate = _this$props.liveUpdate,
+          path = _this$props.path,
+          onChange = _this$props.onChange;
       if (liveUpdate) _this.update(value);
+      onChange(path, value);
     });
 
     _defineProperty__default['default'](_assertThisInitialized__default['default'](_this), "handleFocus", function () {
@@ -93,10 +99,10 @@ var DatString = /*#__PURE__*/function (_Component) {
   _createClass__default['default'](DatString, [{
     key: "update",
     value: function update(value) {
-      var _this$props = this.props,
-          _onUpdateValue = _this$props._onUpdateValue,
-          onUpdate = _this$props.onUpdate,
-          path = _this$props.path;
+      var _this$props2 = this.props,
+          _onUpdateValue = _this$props2._onUpdateValue,
+          onUpdate = _this$props2.onUpdate,
+          path = _this$props2.path;
 
       _onUpdateValue(path, value);
 
@@ -105,12 +111,12 @@ var DatString = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this$props2 = this.props,
-          path = _this$props2.path,
-          label = _this$props2.label,
-          labelWidth = _this$props2.labelWidth,
-          className = _this$props2.className,
-          style = _this$props2.style;
+      var _this$props3 = this.props,
+          path = _this$props3.path,
+          label = _this$props3.label,
+          labelWidth = _this$props3.labelWidth,
+          className = _this$props3.className,
+          style = _this$props3.style;
       var labelText = isString__default['default'](label) ? label : path;
       return /*#__PURE__*/React__default['default'].createElement("li", {
         className: cx__default['default']('cr', 'string', className),
@@ -151,6 +157,9 @@ _defineProperty__default['default'](DatString, "defaultProps", {
   path: null,
   label: null,
   onUpdate: function onUpdate() {
+    return null;
+  },
+  onChange: function onChange() {
     return null;
   }
 });
@@ -369,9 +378,12 @@ var DatNumber = /*#__PURE__*/function (_Component) {
     _defineProperty__default['default'](_assertThisInitialized__default['default'](_this), "update", function (value) {
       var _this$props2 = _this.props,
           _onUpdateValue = _this$props2._onUpdateValue,
-          path = _this$props2.path;
+          path = _this$props2.path,
+          onChange = _this$props2.onChange;
 
       _onUpdateValue(path, toNumber(value));
+
+      onChange(path, value);
     });
 
     _this.state = {
@@ -468,7 +480,10 @@ _defineProperty__default['default'](DatNumber, "defaultProps", {
   step: null,
   path: null,
   label: null,
-  disableSlider: null
+  disableSlider: null,
+  onChange: function onChange() {
+    return null;
+  }
 });
 
 function _createSuper$6(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$6(); return function _createSuperInternal() { var Super = _getPrototypeOf__default['default'](Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf__default['default'](this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn__default['default'](this, result); }; }
@@ -491,9 +506,12 @@ var DatBoolean = /*#__PURE__*/function (_Component) {
       var value = event.target.checked;
       var _this$props = _this.props,
           _onUpdateValue = _this$props._onUpdateValue,
-          path = _this$props.path;
+          path = _this$props.path,
+          onChange = _this$props.onChange;
 
       _onUpdateValue(path, value);
+
+      onChange(path, value);
     });
 
     _this.state = {
@@ -549,7 +567,10 @@ _defineProperty__default['default'](DatBoolean, "defaultProps", {
   className: null,
   style: null,
   path: null,
-  label: null
+  label: null,
+  onChange: function onChange() {
+    return null;
+  }
 });
 
 var DatButton = function DatButton(_ref) {
@@ -619,7 +640,9 @@ var DatFolder = /*#__PURE__*/function (_Component) {
           _this$props.title;
           var rest = _objectWithoutProperties__default['default'](_this$props, ["children", "title"]);
 
-      return React__default['default'].Children.map(children, function (child) {
+      return React__default['default'].Children.toArray(children).filter(function (child) {
+        return child != null;
+      }).map(function (child) {
         return /*#__PURE__*/React.cloneElement(child, _objectSpread$1({}, rest));
       });
     }
@@ -655,7 +678,9 @@ _defineProperty__default['default'](DatFolder, "defaultProps", {
   className: null,
   style: null,
   title: 'Folder',
-  closed: true
+  closed: true //onChange: () => null This is causing the callbacks to be overriden in the components inside the folder
+  //we need to check why
+
 });
 
 function _createSuper$4(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$4(); return function _createSuperInternal() { var Super = _getPrototypeOf__default['default'](Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf__default['default'](this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn__default['default'](this, result); }; }
@@ -680,11 +705,13 @@ var DatSelect = /*#__PURE__*/function (_Component) {
           liveUpdate = _this$props.liveUpdate,
           _onUpdateValue = _this$props._onUpdateValue,
           onUpdate = _this$props.onUpdate,
-          path = _this$props.path;
+          path = _this$props.path,
+          onChange = _this$props.onChange;
 
       _onUpdateValue(path, value);
 
       if (liveUpdate) onUpdate(value);
+      onChange(path, value);
     });
 
     _this.state = {
@@ -722,7 +749,7 @@ var DatSelect = /*#__PURE__*/function (_Component) {
         style: {
           width: "calc(100% - ".concat(labelWidth, ")")
         }
-      }, options.map(function (item, index) {
+      }, Array.isArray(options) ? options.map(function (item, index) {
         return (
           /*#__PURE__*/
           // eslint-disable-next-line react/no-array-index-key
@@ -730,6 +757,19 @@ var DatSelect = /*#__PURE__*/function (_Component) {
             key: index,
             value: item
           }, optionLabels ? optionLabels[index] : item)
+        );
+      }) : Object.entries(options).map(function (_ref) {
+        var _ref2 = _slicedToArray__default['default'](_ref, 2),
+            key = _ref2[0],
+            value = _ref2[1];
+
+        return (
+          /*#__PURE__*/
+          // eslint-disable-next-line react/no-array-index-key
+          React__default['default'].createElement("option", {
+            key: key,
+            value: key
+          }, optionLabels ? optionLabels[key] : value)
         );
       }))));
     }
@@ -754,6 +794,9 @@ _defineProperty__default['default'](DatSelect, "defaultProps", {
   label: null,
   optionLabels: null,
   onUpdate: function onUpdate() {
+    return null;
+  },
+  onChange: function onChange() {
     return null;
   }
 });
@@ -904,9 +947,12 @@ var DatColor = /*#__PURE__*/function (_Component) {
       var value = isString__default['default'](color) ? color : color.hex;
       var _this$props = _this.props,
           _onUpdateValue = _this$props._onUpdateValue,
-          path = _this$props.path;
+          path = _this$props.path,
+          onChange = _this$props.onChange;
 
       _onUpdateValue(path, value);
+
+      onChange(path, value);
     });
 
     _this.state = {
@@ -986,7 +1032,10 @@ _defineProperty__default['default'](DatColor, "defaultProps", {
   className: null,
   style: null,
   path: null,
-  label: null
+  label: null,
+  onChange: function onChange() {
+    return null;
+  }
 });
 
 function _createSuper$1(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$1(); return function _createSuperInternal() { var Super = _getPrototypeOf__default['default'](Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf__default['default'](this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn__default['default'](this, result); }; }
@@ -1116,7 +1165,9 @@ var DatGui = /*#__PURE__*/function (_Component) {
       var _this$props2 = this.props,
           children = _this$props2.children,
           data = _this$props2.data;
-      return React__default['default'].Children.toArray(children).map(function (child, i) {
+      return React__default['default'].Children.toArray(children).filter(function (child) {
+        return child != null;
+      }).map(function (child, i) {
         var liveUpdate = isUndefined__default['default'](child.props.liveUpdate) ? _this2.props.liveUpdate : child.props.liveUpdate;
         var labelWidth = isUndefined__default['default'](child.props.labelWidth) ? _this2.props.labelWidth : child.props.labelWidth;
         return /*#__PURE__*/React.cloneElement(child, {

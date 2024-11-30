@@ -15,6 +15,7 @@ import result from 'lodash.result';
 import isFinite$1 from 'lodash.isfinite';
 import clamp from 'lodash.clamp';
 import _objectWithoutProperties from '@babel/runtime/helpers/objectWithoutProperties';
+import _slicedToArray from '@babel/runtime/helpers/slicedToArray';
 import { EditableInput, ColorWrap, Saturation, Hue } from 'react-color/lib/components/common';
 import color from 'react-color/lib/helpers/color';
 import _toConsumableArray from '@babel/runtime/helpers/toConsumableArray';
@@ -37,8 +38,12 @@ var DatString = /*#__PURE__*/function (_Component) {
 
     _defineProperty(_assertThisInitialized(_this), "handleChange", function (event) {
       var value = event.target.value;
-      var liveUpdate = _this.props.liveUpdate;
+      var _this$props = _this.props,
+          liveUpdate = _this$props.liveUpdate,
+          path = _this$props.path,
+          onChange = _this$props.onChange;
       if (liveUpdate) _this.update(value);
+      onChange(path, value);
     });
 
     _defineProperty(_assertThisInitialized(_this), "handleFocus", function () {
@@ -67,10 +72,10 @@ var DatString = /*#__PURE__*/function (_Component) {
   _createClass(DatString, [{
     key: "update",
     value: function update(value) {
-      var _this$props = this.props,
-          _onUpdateValue = _this$props._onUpdateValue,
-          onUpdate = _this$props.onUpdate,
-          path = _this$props.path;
+      var _this$props2 = this.props,
+          _onUpdateValue = _this$props2._onUpdateValue,
+          onUpdate = _this$props2.onUpdate,
+          path = _this$props2.path;
 
       _onUpdateValue(path, value);
 
@@ -79,12 +84,12 @@ var DatString = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this$props2 = this.props,
-          path = _this$props2.path,
-          label = _this$props2.label,
-          labelWidth = _this$props2.labelWidth,
-          className = _this$props2.className,
-          style = _this$props2.style;
+      var _this$props3 = this.props,
+          path = _this$props3.path,
+          label = _this$props3.label,
+          labelWidth = _this$props3.labelWidth,
+          className = _this$props3.className,
+          style = _this$props3.style;
       var labelText = isString(label) ? label : path;
       return /*#__PURE__*/React.createElement("li", {
         className: cx('cr', 'string', className),
@@ -125,6 +130,9 @@ _defineProperty(DatString, "defaultProps", {
   path: null,
   label: null,
   onUpdate: function onUpdate() {
+    return null;
+  },
+  onChange: function onChange() {
     return null;
   }
 });
@@ -343,9 +351,12 @@ var DatNumber = /*#__PURE__*/function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "update", function (value) {
       var _this$props2 = _this.props,
           _onUpdateValue = _this$props2._onUpdateValue,
-          path = _this$props2.path;
+          path = _this$props2.path,
+          onChange = _this$props2.onChange;
 
       _onUpdateValue(path, toNumber(value));
+
+      onChange(path, value);
     });
 
     _this.state = {
@@ -442,7 +453,10 @@ _defineProperty(DatNumber, "defaultProps", {
   step: null,
   path: null,
   label: null,
-  disableSlider: null
+  disableSlider: null,
+  onChange: function onChange() {
+    return null;
+  }
 });
 
 function _createSuper$6(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$6(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -465,9 +479,12 @@ var DatBoolean = /*#__PURE__*/function (_Component) {
       var value = event.target.checked;
       var _this$props = _this.props,
           _onUpdateValue = _this$props._onUpdateValue,
-          path = _this$props.path;
+          path = _this$props.path,
+          onChange = _this$props.onChange;
 
       _onUpdateValue(path, value);
+
+      onChange(path, value);
     });
 
     _this.state = {
@@ -523,7 +540,10 @@ _defineProperty(DatBoolean, "defaultProps", {
   className: null,
   style: null,
   path: null,
-  label: null
+  label: null,
+  onChange: function onChange() {
+    return null;
+  }
 });
 
 var DatButton = function DatButton(_ref) {
@@ -593,7 +613,9 @@ var DatFolder = /*#__PURE__*/function (_Component) {
           _this$props.title;
           var rest = _objectWithoutProperties(_this$props, ["children", "title"]);
 
-      return React.Children.map(children, function (child) {
+      return React.Children.toArray(children).filter(function (child) {
+        return child != null;
+      }).map(function (child) {
         return /*#__PURE__*/cloneElement(child, _objectSpread$1({}, rest));
       });
     }
@@ -629,7 +651,9 @@ _defineProperty(DatFolder, "defaultProps", {
   className: null,
   style: null,
   title: 'Folder',
-  closed: true
+  closed: true //onChange: () => null This is causing the callbacks to be overriden in the components inside the folder
+  //we need to check why
+
 });
 
 function _createSuper$4(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$4(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -654,11 +678,13 @@ var DatSelect = /*#__PURE__*/function (_Component) {
           liveUpdate = _this$props.liveUpdate,
           _onUpdateValue = _this$props._onUpdateValue,
           onUpdate = _this$props.onUpdate,
-          path = _this$props.path;
+          path = _this$props.path,
+          onChange = _this$props.onChange;
 
       _onUpdateValue(path, value);
 
       if (liveUpdate) onUpdate(value);
+      onChange(path, value);
     });
 
     _this.state = {
@@ -696,7 +722,7 @@ var DatSelect = /*#__PURE__*/function (_Component) {
         style: {
           width: "calc(100% - ".concat(labelWidth, ")")
         }
-      }, options.map(function (item, index) {
+      }, Array.isArray(options) ? options.map(function (item, index) {
         return (
           /*#__PURE__*/
           // eslint-disable-next-line react/no-array-index-key
@@ -704,6 +730,19 @@ var DatSelect = /*#__PURE__*/function (_Component) {
             key: index,
             value: item
           }, optionLabels ? optionLabels[index] : item)
+        );
+      }) : Object.entries(options).map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            key = _ref2[0],
+            value = _ref2[1];
+
+        return (
+          /*#__PURE__*/
+          // eslint-disable-next-line react/no-array-index-key
+          React.createElement("option", {
+            key: key,
+            value: key
+          }, optionLabels ? optionLabels[key] : value)
         );
       }))));
     }
@@ -728,6 +767,9 @@ _defineProperty(DatSelect, "defaultProps", {
   label: null,
   optionLabels: null,
   onUpdate: function onUpdate() {
+    return null;
+  },
+  onChange: function onChange() {
     return null;
   }
 });
@@ -878,9 +920,12 @@ var DatColor = /*#__PURE__*/function (_Component) {
       var value = isString(color) ? color : color.hex;
       var _this$props = _this.props,
           _onUpdateValue = _this$props._onUpdateValue,
-          path = _this$props.path;
+          path = _this$props.path,
+          onChange = _this$props.onChange;
 
       _onUpdateValue(path, value);
+
+      onChange(path, value);
     });
 
     _this.state = {
@@ -960,7 +1005,10 @@ _defineProperty(DatColor, "defaultProps", {
   className: null,
   style: null,
   path: null,
-  label: null
+  label: null,
+  onChange: function onChange() {
+    return null;
+  }
 });
 
 function _createSuper$1(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$1(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -1090,7 +1138,9 @@ var DatGui = /*#__PURE__*/function (_Component) {
       var _this$props2 = this.props,
           children = _this$props2.children,
           data = _this$props2.data;
-      return React.Children.toArray(children).map(function (child, i) {
+      return React.Children.toArray(children).filter(function (child) {
+        return child != null;
+      }).map(function (child, i) {
         var liveUpdate = isUndefined(child.props.liveUpdate) ? _this2.props.liveUpdate : child.props.liveUpdate;
         var labelWidth = isUndefined(child.props.labelWidth) ? _this2.props.labelWidth : child.props.labelWidth;
         return /*#__PURE__*/cloneElement(child, {
